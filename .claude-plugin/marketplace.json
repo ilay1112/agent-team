@@ -1,0 +1,14 @@
+{
+  "name": "agent-team-marketplace",
+  "owner": {
+    "name": "ilay",
+    "email": "ilay1112@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "agent-team",
+      "source": "./",
+      "description": "The full 19-agent dev company with workflow, token policy, and /start intake."
+    }
+  ]
+}
