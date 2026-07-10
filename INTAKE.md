@@ -57,18 +57,40 @@ fields, and precise fields eliminate the QUESTION round-trips that burn tokens m
 | 3 | Design language? (header: Design) | minimal/clean · playful · corporate · match references I'll provide | design-expert token direction |
 | 4 | Languages/locales? (header: Locales) | one language · +RTL language · multi-locale · English-only for now | i18n requirement; design/web gates |
 
+## Phase 5 — Traction & working style → PRODUCT.md Growth + Owner sync + LIFECYCLE stage
+
+The questions that separate products that make money from products that merely ship: validation
+before code, distribution as a first-class decision (successful indie founders rank it above
+product), and an explicit owner-involvement contract so the team never drifts unsupervised.
+
+| # | Question | Options | Destination |
+|---|----------|---------|-------------|
+| 1 | How validated is the idea? (header: Validation) | just my conviction · talked to target users · waitlist/signups exist · people already pay for it | PRODUCT.md lifecycle stage (LIFECYCLE.md); pre-validation → validation tickets precede build tickets |
+| 2 | How do the first 100 users find it? (header: Channel, multiSelect) | search/content (SEO) · communities & social · paid ads · app-store search · my existing audience | PRODUCT.md Growth: primary channel → seeds SEO/MKT lane priorities |
+| 3 | What do people use today instead? (header: Alternatives) | nothing / manual work · spreadsheets or DIY · a competitor I'll name · unsure — research it | PRODUCT.md Growth: alternatives; `unsure` → PM competitive-research ticket |
+| 4 | How involved do you want to be? (header: Sync) | approve every batch · weekly sync, batches run free · milestone gates only · minimal — escalations only | PRODUCT.md Owner sync contract → orchestrator pulse cadence (LIFECYCLE.md) |
+
 ## Post-interview sequence (orchestrator)
 
 1. Write `ops/PRODUCT.md` — every field from its mapped answer; `assumption:` entries for unsure
-   answers.
-2. Seed `ops/COSTS.md` caps from Phase 4.1; seed `ops/ROADMAP.md` Now from Phase 2.3/2.4.
+   answers. Set the lifecycle stage (LIFECYCLE.md) from Phase 5.1 and the sync contract from 5.4.
+2. Seed `ops/COSTS.md` caps from Phase 4.1; seed `ops/ROADMAP.md` Now from Phase 2.3/2.4 —
+   stage-appropriate: a pre-validation product's Now list is validation work, not features.
 3. Open research tickets for every `assumption:`.
-4. Post the founding `DECISION` on the board (product, stage, caps, gates activated).
-5. Present the first ticket batch (REQUEST_FORMAT) for owner confirmation — building starts on
-   confirmed tickets.
+4. Post the founding `DECISION` on the board (product, stage, caps, gates activated, sync cadence).
+5. Present the first ticket batch (REQUEST_FORMAT) for owner confirmation.
+6. On confirmation: install the batch roles' skill packs (SKILLS_MANIFEST "Installation protocol")
+   and ask the owner to **close and reopen Claude Code** — building starts in the fresh session.
 
 ## Capability-gap check (during intake and forever after)
 
 When answers reveal a needed role missing from the roster (e.g., ML pipeline, blockchain, embedded
 firmware), the orchestrator routes a `TKT-HR-n` to **hr** — the agent-creator — who builds the new
 specialist per its creation procedure before the affected work is scheduled.
+
+## After intake: the questioning never stops
+
+Intake is the first interrogation, not the last. The orchestrator re-opens the dialog with the
+owner on a fixed cadence (the **owner pulse**) and at every lifecycle stage exit (the **stage
+gate**) — protocol, question sets, and cadence defaults live in `LIFECYCLE.md`. Declared facts beat
+guessed ones for the whole life of the product, not just its first day.

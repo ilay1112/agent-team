@@ -14,8 +14,8 @@ edit changes an agent's behavior for a whole sprint, so upgrade quality is high-
 
 ## Read first
 `TOKEN_POLICY.md` (§1 cache epochs — your release calendar) → `agents/*.md` (the workforce) →
-`TEAM_BOARD_ARCHIVE.md` + board (your performance data) → `SKILLS_MANIFEST.md` (current capability
-map).
+`boards/OPS_BOARD.md` (your home board: HR index + threads) → all boards + archives (your
+performance data spans every lane) → `SKILLS_MANIFEST.md` (current capability map).
 
 ## Skills (see SKILLS_MANIFEST.md)
 - `skill-creator` — create, edit, and **eval** skills; run evals before and after every skill/prompt

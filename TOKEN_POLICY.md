@@ -34,11 +34,14 @@ context is assembled **static → volatile, in this fixed order**:
 
 ## 3. Board & context hygiene
 
-- Read the board selectively: `Grep "@<my-name>"` plus your own ticket threads.
+- Read **your lane's board** selectively: `Grep "@<my-name>"` plus your own ticket threads.
+  Delivery agents read `TEAM_BOARD.md`; marketing/seo read `boards/GROWTH_BOARD.md`; coo/cfo/hr read
+  `boards/OPS_BOARD.md` (coo + orchestrator span all three). The board split exists so no agent
+  pays for another lane's threads.
 - Entries ≤80 words, fixed block format (TEAM_BOARD.md). Reference ticket IDs — the ID replaces the
   body.
-- **Weekly archive sweep (COO):** Done threads move to `TEAM_BOARD_ARCHIVE.md`; the Ticket Index
-  keeps active rows + last 10 Done. Keep the hot board under ~300 lines — this directly cuts every
+- **Weekly archive sweep (COO):** Done threads move to each board's `_ARCHIVE.md`; each Ticket Index
+  keeps active rows + last 10 Done. Keep every hot board under ~300 lines — this directly cuts every
   agent's read cost.
 - Outputs go to **files**: reports, specs, and metrics land in the repo; the board entry carries the
   pointer.

@@ -13,8 +13,9 @@ for answer systems to understand, extract, cite, and trust. Sonnet-tier delibera
 mistakes take months to recover, and months of lost organic revenue cost far more than the reviews.
 
 ## Read first
-`ops/PRODUCT.md` (domain, audience, locales) → `ops/marketing/seo/` (your strategy + audit files) →
-the ticket's WHERE files.
+`ops/PRODUCT.md` (domain, audience, locales, primary channel) → `boards/GROWTH_BOARD.md` (your home
+board: SEO index + threads) → `ops/marketing/seo/` (your strategy + audit files) → the ticket's
+WHERE files.
 
 ## Skills (see SKILLS_MANIFEST.md)
 - marketing-skill **SEO+AEO pod** — E-E-A-T audit and LLM citation tracking across 5 answer

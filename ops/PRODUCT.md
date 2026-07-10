@@ -9,6 +9,17 @@ Edit only at cache-epoch boundaries; announce edits as a `DECISION` on the board
 - **One-liner (what it does, for whom):**
 - **Business model / pricing tiers:**
 - **Revenue goal (monthly, 12-month target):**
+- **Lifecycle stage (LIFECYCLE.md):** <!-- Validate | Build | Launch | Monetize | Grow — moved only by a stage-gate DECISION -->
+
+## Growth & distribution
+- **Primary channel (how the first 100 users arrive):**
+- **Alternatives / competitors (what people use today):**
+- **Validation evidence so far:**
+
+## Owner sync contract
+- **Involvement level (intake Phase 5):** <!-- approve every batch | weekly sync | milestone gates | minimal -->
+- **Pulse cadence:** <!-- default: every completed batch or weekly, whichever first -->
+- **Last pulse / next due:**
 
 ## Platforms & repos
 | Platform | Path / repo | Framework | Deploy target |

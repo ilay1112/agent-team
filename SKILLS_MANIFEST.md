@@ -6,6 +6,26 @@ notes `skill unavailable` in its HANDOFF. Sources: mcpservers.org/agent-skills,
 github.com/alirezarezvani/claude-skills, github.com/anthropics/skills, welcomedeveloper.com,
 artificialcorner.com.
 
+## Installation protocol (orchestrator-owned)
+
+Skills are infrastructure: a missing skill silently degrades an agent's output (the agent falls back
+to its built-in checklist), so provisioning is verified — never assumed.
+
+1. **When:** at `/start`, right after the first ticket batch is confirmed — install the packs for
+   every role owning or gating a first-batch ticket. As the project progresses, **before dispatching
+   any batch**, the orchestrator checks this manifest for the batch's owners + gates and installs
+   what's missing.
+2. **How:** add the marketplaces below (one-time), then `/plugin install <pack>` / the listed `npx`
+   command per the table. Record what was installed in a board `UPDATE`.
+3. **Verify:** `claude plugin list` (or check `~/.claude/plugins/`) — confirm the pack is present
+   rather than trusting the install command's exit alone.
+4. **Restart rule (hard):** marketplace-plugin skills load only at session start. After installing,
+   **stop and ask the human owner to close and reopen Claude Code** before dispatching agents that
+   need the new skills. `/reload-plugins` is not reliable for marketplace skills — a full restart is.
+5. **Fallback:** an agent finding a listed skill absent mid-ticket notes `skill unavailable` in its
+   HANDOFF; the orchestrator treats two such notes for the same pack as a provisioning bug and fixes
+   it before the next batch.
+
 ## Marketplaces to add (one-time)
 
 ```

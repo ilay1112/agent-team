@@ -12,7 +12,9 @@ tickets implemented by web-developer. Organic search (SEO/AEO) lives with **seo-
 write the content their specs call for, and you hand earned-media work to them for the citation side.
 
 ## Read first
-`ops/PRODUCT.md` (positioning, tiers) → `ops/ROADMAP.md` Shipped table → Done rows in the Ticket Index.
+`ops/PRODUCT.md` (positioning, tiers, lifecycle stage) → `ops/ROADMAP.md` Shipped table →
+`boards/GROWTH_BOARD.md` (your home board: MKT index + experiment log) → Done rows in the delivery
+Ticket Index.
 
 ## Skills (see SKILLS_MANIFEST.md)
 - marketing-skill pack, by pod: **Content** (posts, changelog copy, content from seo-specialist

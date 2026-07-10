@@ -2,11 +2,19 @@
 
 Single source of process truth. Every agent follows it on every change. Read with `TEAM_BOARD.md`
 (how agents talk), `REQUEST_FORMAT.md` (how work is specified), `TOKEN_POLICY.md` (how we stay cheap),
-`SKILLS_MANIFEST.md` (capability packs), and `ops/PRODUCT.md` (what we're building).
+`SKILLS_MANIFEST.md` (capability packs + installation protocol), `LIFECYCLE.md` (idea→profit stages
+and owner sync), and `ops/PRODUCT.md` (what we're building).
 
 We are a **company running a live product**: triage → design → branch → implement → review →
 validate → supervisor gate → merge → deploy → verify → close. Keep `main` green, ship small
-increments continuously, and account for every unit of infra spend.
+increments continuously, and account for every unit of infra spend. What gets built is scoped by the
+product's **lifecycle stage** (LIFECYCLE.md) — a pre-validation product earns validation tickets,
+not feature tickets.
+
+**Boards:** delivery work lives on `TEAM_BOARD.md`; growth work (MKT/SEO) on
+`boards/GROWTH_BOARD.md`; business ops (BIZ/HR) on `boards/OPS_BOARD.md`. Same protocol everywhere;
+"the board" below means the board owning the ticket's area. Cross-board handoffs name the target
+board.
 
 ---
 
@@ -20,7 +28,7 @@ Backlog → Ready → In Progress → In Review → In Validation → Supervisor
 - **ID format:** `TKT-<AREA>-<n>` — areas: `API WEB IOS MAC AND WIN OPS SEC DES BIZ MKT SEO HR INC`.
   Orchestrator assigns IDs and owns the board's Ticket Index.
 - Every ticket is written in `REQUEST_FORMAT.md` schema. One owning agent + named validators.
-- Record every state change on the board — the board is the single memory of truth.
+- Record every state change on the ticket's board — the boards are the single memory of truth.
 
 ### Definition of Ready (DoR)
 GOAL + ACCEPT criteria present; WHERE pointers resolved (or explicitly `WHERE: new`); API decision if
@@ -86,9 +94,11 @@ The supervisor rules on conformance exclusively; QA, security, and style remain 
 
 **Bootstrap (once per product):** owner runs `/start` → orchestrator interrogates per `INTAKE.md`
 (multi-choice dialogs: business model, platforms, scope, data class, compliance, budget caps,
-success metric) → `ops/PRODUCT.md` + COSTS caps + ROADMAP seeded from answers → assumption tickets
-for unknowns → founding `DECISION` → owner confirms the first batch. A capability gap surfaced at
-intake routes to hr (agent creation) ahead of scheduling.
+success metric, validation/distribution/sync contract) → `ops/PRODUCT.md` + COSTS caps + ROADMAP
+seeded from answers, lifecycle stage set → assumption tickets for unknowns → founding `DECISION` →
+owner confirms the first batch → orchestrator installs the batch roles' skill packs
+(SKILLS_MANIFEST "Installation protocol") and the owner **closes and reopens Claude Code** so the
+skills load. A capability gap surfaced at intake routes to hr (agent creation) ahead of scheduling.
 
 **Feature:** PM writes ticket (REQUEST_FORMAT, `FEAT`) → orchestrator triages, assigns owner+gates →
 DoR check → owner implements on branch → HANDOFF → gates CLEAR → supervisor MEETS → merge → deploy →
@@ -111,7 +121,14 @@ infra run finish before acting on it (state locks stay consistent).
 
 ## 9. Business cadence
 
-- **Weekly (COO):** ops review — ticket-age SLAs, blocked items, board archive sweep (TOKEN_POLICY §3).
+- **Per batch / weekly (orchestrator):** owner pulse — one AskUserQuestion sync per LIFECYCLE.md
+  (direction check, decision queue, budget health, outside signal); stage-gate review when a
+  lifecycle stage's exit evidence lands. Agents queue owner questions for the pulse; hard blockers
+  escalate immediately.
+- **Per batch (orchestrator):** skill-provisioning check — batch owners' + gates' packs installed
+  per SKILLS_MANIFEST before dispatch; installs trigger the close-and-reopen-Claude step.
+- **Weekly (COO):** ops review — ticket-age SLAs, blocked items, archive sweep across all three
+  boards (TOKEN_POLICY §3).
 - **Monthly (CFO):** cost review of `ops/COSTS.md` vs caps — downgrade/kill decisions ticketized as `BIZ`.
 - **Per release (marketing):** changelog → announcement/ASO updates, ticketized as `MKT`.
 - **Monthly (seo-specialist):** organic health review — GSC metrics, AI-citation tracking, ranking

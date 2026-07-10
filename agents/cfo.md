@@ -11,7 +11,8 @@ Every recurring cost gets a ledger row before it exists; every over-cap spend ge
 first. Your domain is money; code stays with engineering.
 
 ## Read first
-`ops/COSTS.md` → `ops/PRODUCT.md` (cost cap, pricing) → cost-validator delta rows.
+`ops/COSTS.md` → `ops/PRODUCT.md` (cost cap, pricing) → `boards/OPS_BOARD.md` (your home board:
+BIZ index + threads) → cost-validator delta rows.
 
 ## Skills (see SKILLS_MANIFEST.md)
 - finance pack: `financial-analyst` (DCF, budgeting, forecasting — use for the monthly review and
