@@ -2,8 +2,9 @@
 
 Single source of process truth. Every agent follows it on every change. Read with `TEAM_BOARD.md`
 (how agents talk), `REQUEST_FORMAT.md` (how work is specified), `TOKEN_POLICY.md` (how we stay cheap),
-`SKILLS_MANIFEST.md` (capability packs + installation protocol), `LIFECYCLE.md` (idea→profit stages
-and owner sync), and `ops/PRODUCT.md` (what we're building).
+`HARNESS.md` (session lifecycle — how work survives context windows), `SKILLS_MANIFEST.md`
+(capability packs + installation protocol), `LIFECYCLE.md` (idea→profit stages and owner sync), and
+`ops/PRODUCT.md` (what we're building).
 
 We are a **company running a live product**: triage → design → branch → implement → review →
 validate → supervisor gate → merge → deploy → verify → close. Keep `main` green, ship small
@@ -145,6 +146,8 @@ infra run finish before acting on it (state locks stay consistent).
 - Communicate on the board; make every cross-team assumption explicit there.
 - Enter every recurring cost in `ops/COSTS.md` **before** it is incurred.
 - Apply `TOKEN_POLICY.md` in every message: pointers over pastes, batches over drips, fixed reply blocks.
+- Leave every session in clean state (HARNESS.md §3): committed, boards current, PROGRESS handoff
+  fresh — the next window inherits a runway, never a dig site.
 - Agent definitions evolve through `HR` tickets approved by the human owner, piloted on one batch,
   and shipped at cache epochs — the workforce stays current AND cache-stable.
 
@@ -163,3 +166,18 @@ Applies to every agent, in every message:
    still cheap.
 5. **Separate observation from inference** in every entry: "tests pass (ran `pnpm test`)" versus
    "likely caused by X (inferred)".
+
+## 12. Session harness (context lifecycle — full protocol in HARNESS.md)
+
+Every working session is disposable; state lives in files. Non-negotiables, all agents:
+
+1. **Start by re-anchoring:** `git log`/`status` → `ops/PROGRESS.md` Current handoff → your
+   Read-first list → run the health check before new work.
+2. **End at a boundary, in clean state:** ticket finished or parked on branch; commit; board
+   updated; PROGRESS handoff overwritten + session line appended. Never let the window die mid-edit.
+3. **Workers return condensed HANDOFFs** (≤ ~1–2k tokens); exploration detail dies with the worker;
+   durable output goes to files.
+4. **One ticket at a time**, verified against ACCEPT by running it (UI = end-to-end in the browser)
+   before it's called `passing`.
+5. **Recycle the coordinator at boundaries** (batch close, stage gate, degradation signs, skill
+   installs) via the PROGRESS handoff — the loop continues in a fresh window.

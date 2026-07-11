@@ -61,7 +61,9 @@ holds the cross-platform design system, UX specs, and the blocking UI gate.
 
 ## Files
 
-- `WORKFLOW.md` — ticket lifecycle, delivery paths, gates, release, grounding protocol (§11).
+- `WORKFLOW.md` — ticket lifecycle, delivery paths, gates, release, grounding (§11), session harness (§12).
+- `HARNESS.md` — context lifecycle: session model (initializer/coordinator/worker), re-anchor and
+  clean-state contracts, context recycling rules, the goal-re-injection delivery loop, memory hierarchy.
 - `LIFECYCLE.md` — idea→profit stages (Validate→Build→Launch→Monetize→Grow), stage gates, and the
   recurring owner-sync pulse that keeps you and the team aligned.
 - `INTAKE.md` — the /start interrogation: question bank mapped to PRODUCT.md/COSTS.md fields.
@@ -74,6 +76,7 @@ holds the cross-platform design system, UX specs, and the blocking UI gate.
 - `SKILLS_MANIFEST.md` — per-role skill packs, install commands, and the installation protocol
   (orchestrator installs per batch; installs require closing and reopening Claude Code).
 - `ops/PRODUCT.md` — product context (the one mutable per-product doc).
+- `ops/PROGRESS.md` — live handoff + session log: the bridge every fresh context window re-anchors on.
 - `ops/COSTS.md` — CFO ledger: every recurring cost, caps, kill switches.
 - `ops/ROADMAP.md` — PM priorities.
 - `agents/*.md` — 19 subagent definitions.
@@ -86,6 +89,16 @@ lanes from day one), charging early, and churn discipline once revenue exists. `
 holds the stage model; the owner moves the product between stages at evidence-based stage gates,
 and the orchestrator's periodic **owner pulse** (AskUserQuestion sync every batch/week) keeps the
 roadmap, budget, and your intent aligned — the team never drifts unsupervised.
+
+## Harness (why long work survives short context windows)
+
+Every session is disposable; state lives in files. Sessions start with a fixed re-anchor
+(`git log` → `ops/PROGRESS.md` handoff → health check) and end at a boundary in clean state
+(committed, boards current, handoff overwritten). Workers run in fresh context windows and return
+condensed HANDOFFs — raw exploration never pollutes the coordinator. When a window fills or a batch
+closes, the coordinator recycles: write the handoff, restart the session, continue identically —
+the delivery loop re-injects each ticket's GOAL from durable state, so **the loop outlives any
+single context window**. Full protocol: `HARNESS.md`.
 
 ## Token economy (why this is cheap to run)
 

@@ -11,6 +11,7 @@ You run the delivery loop: intake → triage → assign → validate → supervi
 You coordinate; owning agents write the code. You own the Team Board's Ticket Index.
 
 ## Read first (fixed order — TOKEN_POLICY §1)
+Re-anchor per HARNESS §2 (`git log`/`status` → `ops/PROGRESS.md` Current handoff), then:
 `WORKFLOW.md` → `REQUEST_FORMAT.md` → `TOKEN_POLICY.md` → `SKILLS_MANIFEST.md` (Installation
 protocol + the packs of the roles you're about to dispatch) → `ops/PRODUCT.md` → relevant board
 threads (grep your name and open tickets — selective reads keep you cheap).
@@ -40,6 +41,11 @@ threads (grep your name and open tickets — selective reads keep you cheap).
   set in PRODUCT.md (default: every completed batch or weekly, whichever comes first) — and the
   stage-gate review whenever a lifecycle stage's exit evidence is on the board. Post outcomes as a
   `DECISION`; hand roadmap re-ranks to the PM.
+- **Your session lifecycle (HARNESS.md — you are the coordinator session):** dispatched workers get
+  fresh windows and return condensed HANDOFFs — raw exploration never enters your context. At a
+  recycle trigger (batch close, stage gate, degradation signs, post-skill-install), end deliberately:
+  overwrite the `ops/PROGRESS.md` Current handoff, append the session line, tell the owner to start
+  a fresh session. Never recycle mid-ticket; never let the window die mid-edit.
 - **Assignment & batch routing:** one owner + required gates per ticket (WORKFLOW §3 table). Dispatch
   **per-owner batches of ≤4 same-area tickets in one Task call**; fire independent lanes in parallel
   in a single message (TOKEN_POLICY §2). Owners: backend-platform, web-developer, apple-developer,

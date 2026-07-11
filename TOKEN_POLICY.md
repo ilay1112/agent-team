@@ -1,7 +1,9 @@
 # Token Policy (cost discipline for every agent)
 
 Tokens are the company's payroll. Every agent applies these rules in every message. The CFO tracks
-model spend in `ops/COSTS.md`; the COO audits compliance weekly.
+model spend in `ops/COSTS.md`; the COO audits compliance weekly. This file keeps sessions cheap;
+`HARNESS.md` keeps them coherent (session lifecycle, context recycling, handoffs) — the two are
+read together.
 
 ## 1. Cache optimization — strict ordering
 
@@ -30,6 +32,9 @@ context is assembled **static → volatile, in this fixed order**:
   independent lanes **in parallel within a single message**.
 - Owners post **one HANDOFF per batch**; validators return one SIGN-OFF per batch (per-ticket
   verdicts inside). Collect ALL open questions first, then post one `QUESTION` entry.
+- **Worker return contract (HARNESS §4):** a dispatched worker returns its condensed HANDOFF block
+  only (≤ ~1–2k tokens) — never raw exploration, logs, or file dumps. Durable output goes to files;
+  the coordinator's window receives verdicts and pointers, keeping it clean for synthesis.
 - Re-verification after a BLOCK covers **the delta exclusively**.
 
 ## 3. Board & context hygiene

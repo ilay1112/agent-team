@@ -1,7 +1,7 @@
 {
   "name": "agent-team",
-  "description": "Corporate-style AI dev company: 19 agents (orchestrator, supervisor, platform devs, validators, exec suite), ticket workflow with hard gates, idea-to-profit lifecycle with owner sync pulses, per-batch skill provisioning, token-minimizing policies, and /start project intake. Builds and sustains a profitable product across web, iOS, Android, Windows, and macOS.",
-  "version": "1.1.0",
+  "description": "Corporate-style AI dev company: 19 agents (orchestrator, supervisor, platform devs, validators, exec suite), ticket workflow with hard gates, idea-to-profit lifecycle with owner sync pulses, session harness with context recycling and structured handoffs, per-batch skill provisioning, token-minimizing policies, and /start project intake. Builds and sustains a profitable product across web, iOS, Android, Windows, and macOS.",
+  "version": "1.2.0",
   "author": {
     "name": "ilay",
     "email": "ilay1112@gmail.com"

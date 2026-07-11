@@ -37,6 +37,7 @@ Edit only at cache-epoch boundaries; announce edits as a `DECISION` on the board
 - Design tokens package:
 - CI/CD workflows:
 - Infra-as-code root:
+- **Health check / init commands (HARNESS §2 — run at every session start):** <!-- e.g. `pnpm test && pnpm build`; dev server: `./init.sh` -->
 
 ## Environments
 | Env | URL | Notes |
