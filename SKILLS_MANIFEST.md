@@ -1,77 +1,122 @@
 # Skills Manifest (per-role capability packs)
 
-Install these skills once per machine/repo; each agent's `## Skills` section says when to invoke
-them. When a listed skill is absent, the agent proceeds with the checklist in its own definition and
-notes `skill unavailable` in its HANDOFF. Sources: mcpservers.org/agent-skills,
-github.com/alirezarezvani/claude-skills, github.com/anthropics/skills, welcomedeveloper.com,
-artificialcorner.com.
+Install these packs once per machine; each agent's `## Skills` section says when to invoke them. A
+listed skill that is absent means the agent falls back to the checklist in its own definition and
+notes `skill unavailable` in its HANDOFF.
+
+> **Names in this file are `plugin:skill` identifiers you can pass to the `Skill` tool verbatim.**
+> That is not cosmetic. An earlier version of this manifest listed ~25 skills by wished-for name; 23
+> of them did not exist under those names, which left two roles — `supervisor` and `hr` — with a
+> toolkit that was entirely fictional. HR's monthly capability review had never run once, for the
+> simple reason that none of its tools existed. **A capability is real only when the identifier
+> resolves.** Verify before adding a row (§Verification below); never add a row from a blog post.
 
 ## Installation protocol (orchestrator-owned)
 
-Skills are infrastructure: a missing skill silently degrades an agent's output (the agent falls back
-to its built-in checklist), so provisioning is verified — never assumed.
+Skills are infrastructure: a missing skill silently degrades an agent's output, so provisioning is
+verified, never assumed.
 
 1. **When:** at `/start`, right after the first ticket batch is confirmed — install the packs for
-   every role owning or gating a first-batch ticket. As the project progresses, **before dispatching
-   any batch**, the orchestrator checks this manifest for the batch's owners + gates and installs
-   what's missing.
-2. **How:** add the marketplaces below (one-time), then `/plugin install <pack>` / the listed `npx`
-   command per the table. Record what was installed in a board `UPDATE`.
-3. **Verify:** `claude plugin list` (or check `~/.claude/plugins/`) — confirm the pack is present
-   rather than trusting the install command's exit alone.
+   every role owning or gating a first-batch ticket. Then, **before dispatching any batch**, check
+   this manifest for that batch's owners + gates and install what is missing.
+2. **How:** add the marketplaces below (one-time), then `/plugin install <pack>`.
+3. **Verify:** run the check in §Verification. Confirm the pack is present rather than trusting the
+   install command's exit code.
 4. **Restart rule (hard):** marketplace-plugin skills load only at session start. After installing,
-   **stop and ask the human owner to close and reopen Claude Code** before dispatching agents that
-   need the new skills. `/reload-plugins` is not reliable for marketplace skills — a full restart is.
-5. **Fallback:** an agent finding a listed skill absent mid-ticket notes `skill unavailable` in its
-   HANDOFF; the orchestrator treats two such notes for the same pack as a provisioning bug and fixes
-   it before the next batch.
+   **stop and ask the owner to close and reopen Claude Code** before dispatching agents that need
+   them. `/reload-plugins` is not reliable for marketplace skills.
+5. **Fallback:** two `skill unavailable` notes for the same pack is a provisioning bug — fix it
+   before the next batch, and correct this manifest if the name was wrong.
 
 ## Marketplaces to add (one-time)
 
 ```
 /plugin marketplace add anthropics/skills
-/plugin marketplace add alirezarezvani/claude-skills     # 354 skills across eng/product/marketing/C-suite
 /plugin marketplace add obra/superpowers-marketplace
 /plugin marketplace add LukasNiessen/terrashark
-npx @c0x12c/ai-toolkit@latest --local                    # spartan quality gates
 ```
+
+The `claude-code-skills` marketplace supplies most role packs below (`engineering-skills`,
+`marketing-skills`, `product-skills`, `pm-skills`, `finance-skills`, `pw`, `roast`, `landing`,
+`a11y-audit`, `apple-hig-expert`, `code-to-prd`, `zero-hallucination-coder`).
 
 ## Per-agent skill packs
 
-| Agent                 | Skills                                                                                                                                                                                                                                                                                                                                                     | Source / install                                                                                                                           |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| orchestrator          | `superpowers` (clarify→spec→plan→execute→review); project-management pack (senior-pm, scrum-master); `decision-mapping`                                                                                                                                                                                                                                    | obra/superpowers; alirezarezvani `project-management/`; `npx skills@latest add mattpocock/skills/decision-mapping`                         |
-| supervisor            | `check-impl-against-spec`; `ship-gate`; `zero-hallucination-coder` (Verify phase)                                                                                                                                                                                                                                                                          | `npx skills@latest add warpdotdev/check-impl-against-spec`; alirezarezvani `engineering/`                                                  |
-| product-manager       | product-team pack (product-manager, agile-PO, ux-researcher, roadmap-communicator, code-to-prd); `write-a-prd`; `roast` (GO/RESHAPE/KILL idea panel); `ab-testing`, `analytics`                                                                                                                                                                            | alirezarezvani `product-team/`, `productivity/`; mattpocock/skills; skills.sh coreyhaines31                                                |
-| backend-platform      | `planetscale` (schema branching, index/N+1 discipline); `database-schema-designer`; `zero-hallucination-coder`; `superpowers` TDD; spartan quality gates                                                                                                                                                                                                   | `npx skills@latest add planetscale/skills`; softaworks; alirezarezvani `engineering/`                                                      |
-| web-developer         | `frontend-design` (bundled); `react-best-practices`; `web-design-guidelines` (post-build UI lint); `accessibility`; `superpowers` TDD                                                                                                                                                                                                                      | Anthropic bundled; `npx skills@latest add vercel/react-best-practices`, `vercel-labs/web-interface-guidelines`, `addyosmani/accessibility` |
-| apple-developer       | `apple-hig-expert`; `zero-hallucination-coder`; `superpowers` TDD                                                                                                                                                                                                                                                                                          | alirezarezvani `product-team/`, `engineering/`; obra                                                                                       |
-| android-developer     | spartan toolkit Kotlin profile; `zero-hallucination-coder`; `superpowers` TDD                                                                                                                                                                                                                                                                              | spartan-ai-toolkit; alirezarezvani `engineering/`; obra                                                                                    |
-| windows-developer     | spartan toolkit (typed-language profile); `zero-hallucination-coder`; `superpowers` TDD                                                                                                                                                                                                                                                                    | spartan-ai-toolkit; alirezarezvani `engineering/`; obra                                                                                    |
-| devops-engineer       | `TerraShark` (diagnostic-sequence Terraform, ~600-token activation); CI/CD-builder, helm-charts, kubernetes-operator, feature-flags-architect, slo-architect, chaos-engineering                                                                                                                                                                            | LukasNiessen/terrashark; alirezarezvani `engineering/` reliability portfolio                                                               |
-| design-expert         | `frontend-design`; `web-design-guidelines`; `accessibility`; ui-design + `apple-hig-expert`                                                                                                                                                                                                                                                                | Anthropic bundled; vercel-labs; addyosmani; alirezarezvani `product-team/`                                                                 |
-| qa-validator          | Playwright Pro (test gen, flaky-fix); spartan quality gates (typecheck→lint→test→review, in order)                                                                                                                                                                                                                                                         | alirezarezvani `engineering-team/`; spartan-ai-toolkit                                                                                     |
-| security-validator    | security-auditor + security suite; `git-guardrails-claude-code`; compliance packs (SOC 2 / ISO 27001 / GDPR) when PRODUCT.md declares them                                                                                                                                                                                                                 | alirezarezvani `engineering/`, `ra-qm-team/`; mattpocock/skills                                                                            |
-| performance-validator | `planetscale` (query-plan/index review); `slo-architect`; `code-simplifier` (post-fix cleanup suggestions)                                                                                                                                                                                                                                                 | planetscale/skills; alirezarezvani `engineering/`; anthropics/claude-plugins-official                                                      |
-| cost-validator        | `saas-metrics-coach`; `procurement-optimizer`; TerraShark risk-control output for infra diffs                                                                                                                                                                                                                                                              | alirezarezvani `finance/`, `business-operations/`; LukasNiessen                                                                            |
-| cfo                   | finance pack (financial-analyst: DCF/budgeting/forecasting; saas-metrics-coach); c-level CFO advisor; `pricing-strategist`                                                                                                                                                                                                                                 | alirezarezvani `finance/`, `c-level-advisor/`, `commercial/`                                                                               |
-| coo                   | c-level COO advisor; business-operations pack (process-mapper, vendor-management, capacity-planner, internal-comms, knowledge-ops)                                                                                                                                                                                                                         | alirezarezvani `c-level-advisor/`, `business-operations/`                                                                                  |
-| marketing             | marketing-skill pack — Content, CRO, Channels, Growth, Intelligence, Sales pods; `landing` (single-file landing generator); coreyhaines31 suite: `aso`, `analytics`, `ab-testing`, `emails`, `cold-email`, `churn-prevention`, `copy-editing`, `ad-creative`; `market-competitors` | alirezarezvani `marketing-skill/`, `marketing/`; skills.sh coreyhaines31; artificialcorner vault |
-| seo-specialist        | marketing-skill **SEO+AEO pod** (E-E-A-T audit, LLM citation tracking across 5 answer engines) + `local-seo-manager`; `ai-seo`; `analytics`, `ab-testing`; `market-competitors`; `copy-editing` | alirezarezvani `marketing-skill/`; skills.sh coreyhaines31 |
+Every identifier below was resolved against a live install. `†` marks a substitute adopted because
+the originally-specified skill does not exist under that name.
 
-| hr                    | `skill-creator` (create/edit/**eval** skills — the canary harness); `agent-designer`; `write-a-skill` + `self-eval`; `deep-research`/`quick-research`; c-level CHRO advisor | Anthropic bundled skill-creator; alirezarezvani `engineering/`, `research/`, `c-level-advisor/`; mattpocock/skills |
+| Agent | Skills (`plugin:skill`) | Pack |
+| ----- | ----------------------- | ---- |
+| orchestrator | `superpowers:brainstorming`, `superpowers:writing-plans`, `superpowers:executing-plans`, `superpowers:dispatching-parallel-agents`, `superpowers:subagent-driven-development`; `pm-skills:senior-pm`, `pm-skills:scrum-master` | superpowers · pm-skills |
+| supervisor | `superpowers:verification-before-completion` †, `superpowers:requesting-code-review` †, `zero-hallucination-coder:zero-hallucination-coder` (Verify phase), `engineering-skills:code-reviewer` | superpowers · zero-hallucination-coder · engineering-skills |
+| product-manager | `product-skills:product-manager-toolkit`, `product-skills:product-strategist`, `product-skills:product-discovery`, `product-skills:roadmap-communicator`, `product-skills:experiment-designer`, `product-skills:product-analytics`; `roast:cs-roast` (GO/RESHAPE/KILL panel); `code-to-prd:code-to-prd` | product-skills · roast · code-to-prd |
+| backend-platform | `engineering-skills:senior-backend`, `engineering-skills:senior-architect`, `engineering-skills:tdd-guide`, `zero-hallucination-coder:zero-hallucination-coder` | engineering-skills · zero-hallucination-coder |
+| web-developer | `frontend-design` (bundled), `engineering-skills:senior-frontend`, `engineering-skills:epic-design`, `a11y-audit:a11y-audit` †, `engineering-skills:tdd-guide` | frontend-design · engineering-skills · a11y-audit |
+| apple-developer | `apple-hig-expert:apple-hig-expert`, `zero-hallucination-coder:zero-hallucination-coder`, `engineering-skills:tdd-guide` | apple-hig-expert · engineering-skills |
+| android-developer | `engineering-skills:code-reviewer` (Kotlin), `zero-hallucination-coder:zero-hallucination-coder`, `engineering-skills:tdd-guide` | engineering-skills · zero-hallucination-coder |
+| windows-developer | `engineering-skills:code-reviewer` (C#/.NET), `zero-hallucination-coder:zero-hallucination-coder`, `engineering-skills:tdd-guide` | engineering-skills · zero-hallucination-coder |
+| devops-engineer | `2.3.0:terrashark` (diagnostic-sequence Terraform), `engineering-skills:senior-devops`, `engineering-skills:incident-commander`, `engineering-skills:aws-solution-architect` / `:azure-cloud-architect` / `:gcp-cloud-architect` (per PRODUCT.md cloud) | terrashark · engineering-skills |
+| design-expert | `frontend-design` (bundled), `product-skills:ui-design-system`, `a11y-audit:a11y-audit` †, `apple-hig-expert:apple-hig-expert`, `product-skills:ux-researcher-designer` | frontend-design · product-skills · a11y-audit · apple-hig-expert |
+| qa-validator | `pw:pw` + `pw:generate`, `pw:fix`, `pw:coverage`, `pw:review` (Playwright); `engineering-skills:senior-qa` | pw · engineering-skills |
+| security-validator | `engineering-skills:senior-security` †, `engineering-skills:senior-secops` †, `engineering-skills:security-pen-testing`, `engineering-skills:cloud-security`, `engineering-skills:ai-security` (LLM features) | engineering-skills |
+| performance-validator | `engineering-skills:senior-backend` (query plans/indexes), `engineering-skills:senior-frontend` (bundle/CWV), `simplify` (post-fix cleanup) † | engineering-skills · bundled |
+| cost-validator | `finance-skills:saas-metrics-coach`, `finance-skills:financial-analyst`, `2.3.0:terrashark` (infra-diff risk output) | finance-skills · terrashark |
+| cfo | `finance-skills:financial-analyst`, `finance-skills:saas-metrics-coach`, `marketing-skills:pricing-strategy` | finance-skills · marketing-skills |
+| coo | `pm-skills:scrum-master`, `pm-skills:senior-pm`, `pm-skills:team-communications`, `pm-skills:meeting-analyzer` | pm-skills |
+| marketing | `marketing-skills:marketing-strategy-pmm`, `:launch-strategy`, `:copywriting`, `:content-strategy`, `:email-sequence`, `:app-store-optimization`, `:paid-ads`, `:campaign-analytics`, `:pricing-strategy`, `:page-cro`, `:marketing-psychology`; `landing:cs-landing` | marketing-skills · landing |
+| seo-specialist | `marketing-skills:seo-audit`, `:aeo` (AI answer engines), `:site-architecture`, `:schema-markup`, `:programmatic-seo`, `:local-seo-manager`, `:competitor-alternatives`, `:content-strategy` | marketing-skills |
+| hr | `anthropic-skills:skill-creator` (create/edit/eval skills), `superpowers:writing-skills` †, `engineering-skills:senior-prompt-engineer` † (eval-driven prompt iteration), `engineering-skills:adversarial-reviewer` †, `engineering-skills:named-persona-adversarial-review` †, `anthropic-skills:consolidate-memory` † | anthropic-skills · superpowers · engineering-skills |
+
+### Substitutions, and why
+
+The originals were not installable under the names previously listed. The capability is mostly
+present — under different names, in packs already installed:
+
+| Was listed as | Actually use | Note |
+| ------------- | ------------ | ---- |
+| `accessibility`, `web-design-guidelines` | `a11y-audit:a11y-audit` | WCAG 2.2 A/AA scan-fix-verify |
+| `security-auditor` | `engineering-skills:senior-security`, `:senior-secops` | OWASP + SAST/DAST + compliance |
+| `check-impl-against-spec`, `ship-gate` | `superpowers:verification-before-completion`, `superpowers:requesting-code-review` | The supervisor's whole kit was fictional |
+| `agent-designer`, `write-a-skill`, `self-eval` | `anthropic-skills:skill-creator`, `superpowers:writing-skills`, `engineering-skills:senior-prompt-engineer` | `skill-creator` carries the eval harness |
+| `deep-research` / `quick-research` | `WebSearch` + `WebFetch` (hr already holds both) | No install needed |
+| `decision-mapping` | `superpowers:brainstorming` | Same job at intake |
+| `code-simplifier` | `simplify` (bundled) | Ships with the harness |
+| `planetscale`, `slo-architect`, `procurement-optimizer` | no equivalent installed | Real gaps — see below |
+
+### Known gaps (do not pretend these exist)
+
+- **Schema-branching / query-plan discipline** (`planetscale`): covered informally by
+  `engineering-skills:senior-backend`. Leave as a gap unless a product's DB work justifies sourcing one.
+- **SLO architecture** (`slo-architect`): `engineering-skills:incident-commander` covers response, not
+  SLO design.
+- **Procurement optimization**: `cost-validator` runs on its own checklist plus the finance pack.
+
+An `hr` capability review may close a gap by sourcing or authoring a skill — that is its job, and it
+now has the tools to do it.
+
+## Verification
+
+Names drift as packs version. Check before trusting a row:
+
+```bash
+ls ~/.claude/plugins/cache/*/*/            # installed packs and versions
+cat ~/.claude/plugins/installed_plugins.json
+```
+
+In session, the available-skills list is authoritative — a `plugin:skill` identifier that does not
+appear there will not resolve, whatever this file says. **Fix the row, don't retry the call.**
 
 ## SEO connectors (MCP — live data for seo-specialist)
 
 | Connector | Data | Notes |
 | --------- | ---- | ----- |
-| Google Search Console MCP | impressions, clicks, rankings, indexing status (~20 tools) | free; ground truth for organic health — connect first |
-| DataForSEO MCP | search volume, keyword difficulty, SERP + AI Overview detection | pay-per-call; route through cost-validator |
+| Google Search Console MCP | impressions, clicks, rankings, indexing status | free; ground truth for organic health — connect first |
+| DataForSEO MCP | search volume, difficulty, SERP + AI Overview detection | pay-per-call; route through cost-validator |
 | Ahrefs / Semrush MCP | backlinks, competitor keywords, site audits | subscription; CFO-approved ledger row first |
 
 ## Shared (all agents)
 
-- `zero-hallucination-coder` discipline (Discuss→Map→Decompose→Execute→Verify) backs the Grounding
-  protocol in WORKFLOW §11 — code-writing agents invoke it on any multi-file change.
-- Anthropic document skills (`docx`, `xlsx`, `pptx`, `pdf`) for any file deliverable.
-- `doc-coauthoring` for specs, runbooks, and post-mortems.
+- `zero-hallucination-coder:zero-hallucination-coder` (Discuss→Map→Decompose→Execute→Verify) backs the
+  grounding protocol in WORKFLOW §11 — code-writing agents invoke it on any multi-file change.
+- Document skills for file deliverables: `anthropic-skills:docx`, `:xlsx`, `:pptx`, `:pdf`.
+- `dataviz` before any chart, dashboard, or metric visual.

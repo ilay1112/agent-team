@@ -8,7 +8,7 @@
     {
       "name": "agent-team",
       "source": "./",
-      "description": "The full 19-agent dev company with workflow, token policy, and /start intake."
+      "description": "The full 19-agent dev company: gated ticket workflow enforced by hooks, /start intake, /ticket one-line filing, /standup cross-repo status, token policy, and session harness."
     }
   ]
 }

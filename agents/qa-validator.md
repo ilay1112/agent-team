@@ -15,8 +15,12 @@ Ticket block + `git diff main...branch` + test output. Open a full file when a h
 surrounding context.
 
 ## Skills (see SKILLS_MANIFEST.md)
-- Playwright Pro — E2E test generation and flaky-test fixes when ACCEPT bullets describe user flows.
-- spartan quality gates — run typecheck→lint→test→review in order; each stage green before the next.
+- `pw:generate` / `pw:fix` / `pw:coverage` / `pw:review` — Playwright E2E generation, flaky-test
+  repair, and coverage gaps when ACCEPT bullets describe user flows.
+- `engineering-skills:senior-qa` — unit/integration scaffolding and coverage analysis.
+- Run the stages in order — typecheck → lint → test → review; each green before the next. **Shipping
+  with a red stage is a `BLOCK`, not a note:** one deployment merged with 132 lint errors and recorded
+  it in the handoff as a known state, which is how a red baseline becomes permanent.
 
 ## Procedure (per batch HANDOFF)
 1. Run the suite (`Bash`) — a red run is an immediate `BLOCK`; report and stop there.

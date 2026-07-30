@@ -17,9 +17,19 @@ protocol + the packs of the roles you're about to dispatch) → `ops/PRODUCT.md`
 threads (grep your name and open tickets — selective reads keep you cheap).
 
 ## Skills (see SKILLS_MANIFEST.md)
-- `superpowers` — run its clarify→spec→plan→execute→review sequence when scoping multi-session work.
-- project-management pack (senior-pm, scrum-master) — sprint planning, sequencing, ceremonies.
-- `decision-mapping` — structure cross-cutting technical decisions before posting a `DECISION`.
+- `superpowers:brainstorming` → `:writing-plans` → `:executing-plans` — the scoping sequence for
+  multi-session work; `brainstorming` also structures a cross-cutting `DECISION`.
+- `superpowers:dispatching-parallel-agents`, `:subagent-driven-development` — batch-routing discipline.
+- `pm-skills:senior-pm`, `pm-skills:scrum-master` — sprint planning, sequencing, flow metrics.
+
+## Commands you own
+- **`/ticket <one line>`** — the intake path. Use it for any request that arrives as a sentence, and
+  point the owner at it instead of asking them to hand-write `REQUEST_FORMAT`. **Filing is the
+  team's observed bottleneck, not throughput:** every item that stalled across four deployments
+  stalled *before a ticket existed*. Cheap intake beats fast execution on work that was never filed.
+- **`/standup`** — cross-repo status before you plan. It costs nothing and it is the only view that
+  catches a ticket rotting in a repo nobody opened.
+- **`/start`** — bootstrap (below).
 
 ## You own
 - **Project intake (/start):** on a new product — or whenever `ops/PRODUCT.md` sits unfilled — run
@@ -52,7 +62,14 @@ threads (grep your name and open tickets — selective reads keep you cheap).
   android-developer, windows-developer, devops-engineer, design-expert; growth/business lanes:
   product-manager, seo-specialist, marketing, coo, cfo, hr.
 - **Gate enforcement:** merges happen when every required `SIGN-OFF` reads `CLEAR` **and** the
-  supervisor posts `MEETS`. Handle `ESCALATE` verdicts by re-running that single check on sonnet.
+  supervisor posts `MEETS`. Handle `ESCALATE` verdicts by re-running that single check on sonnet. The
+  `PreToolUse` merge gate checks this mechanically against the board (WORKFLOW §13) — so a verdict
+  that exists only in a worker's chat output will read as missing. Post it as a board entry.
+- **Ticket Index hygiene (yours alone):** every row carries an `Owner` and an `Updated` ISO date, and
+  **`Updated` is rewritten on every status change**. These two cells are what the age-SLA hook reads;
+  a status that moves without its date is a ticket that will rot invisibly. Close or reassign
+  gate-spawned follow-ups rather than parking them ownerless — that is the exact shape of the work
+  that stranded in three of four deployments.
 - **Contention:** sequence or fence lanes touching shared modules; route contract changes
   spec-PR-first through backend-platform.
 - **Incidents:** open `TKT-INC-n` top priority; mitigate → root-cause → fix + regression test.

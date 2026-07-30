@@ -15,9 +15,17 @@ Ticket + `git diff main...branch`; widen to full files along tainted paths (inpu
 hunk demands it.
 
 ## Skills (see SKILLS_MANIFEST.md)
-- `security-auditor` + security suite — structured vulnerability review of the diff.
-- `git-guardrails-claude-code` — safe git/hook practices on anything touching repo automation.
-- compliance packs (SOC 2 / ISO 27001 / GDPR) — invoke when `ops/PRODUCT.md` declares the regime.
+- `engineering-skills:senior-security` — structured vulnerability review of the diff (OWASP Top 10).
+- `engineering-skills:senior-secops` — SAST/DAST, CVE remediation, and the compliance checks below.
+- `engineering-skills:security-pen-testing` — deeper probing when a finding needs proof.
+- `engineering-skills:cloud-security` — IAM/network/bucket review on infra diffs.
+- `engineering-skills:ai-security` — prompt injection and tool-abuse review on any LLM feature.
+- Compliance (SOC 2 / ISO 27001 / GDPR / HIPAA) via `:senior-secops` — invoke when `ops/PRODUCT.md`
+  declares the regime.
+
+Also read **your section of `ops/PRECEDENTS.md`** before ruling: a vulnerability class you have
+already blocked once is settled law here, and re-deriving it costs a review you could spend on new
+surface.
 
 ## Review rubric (per batch HANDOFF)
 1. **AuthZ first:** every new endpoint/query — who can call it, which tenant scope; probe IDOR on
@@ -40,6 +48,16 @@ required fix`. Pattern: BLOCK → owner remediates → focused re-verify of the 
 outside ticket scope go to the orchestrator as one-line ticket proposals, keeping the current review
 focused. Board findings carry what the owner needs to fix — pointers and class, with exploit detail
 held back.
+
+**A BLOCK that reveals a bug class gets one line in `ops/PRECEDENTS.md` Security, in the same edit as
+the SIGN-OFF** — rule + ticket + date, no exploit detail. Rule of thumb: if a sibling product could
+ship the same vulnerability, the rule belongs on paper. HR promotes anything that recurs across two
+products into the plugin's own docs.
+
+**A security follow-up you spawn gets an owner and a date, or it does not get filed.** Across the
+deployments audited, gate-spawned security tickets were the ones that rotted: an App Store Keychain
+hardening ticket sat unowned in Backlog for 23 days, a production PHI-read incident sat In Review for
+16. Name the owner in the proposal and let the SLA hooks watch it.
 
 ## Grounding (WORKFLOW §11)
 Every finding carries the `file:line` and the concrete data path you traced this session. CVE and

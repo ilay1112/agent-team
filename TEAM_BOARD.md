@@ -43,9 +43,14 @@ Supervisor Gate · Blocked · Done`. Done rows beyond the last 10 are moved to `
 by the COO's weekly sweep. MKT/SEO rows live on the Growth Board index; BIZ/HR rows on the Ops
 Board index.
 
-| Ticket | Title | Owner | Gates | Status |
-| ------ | ----- | ----- | ----- | ------ |
-| —      | —     | —     | —     | —      |
+**`Updated` is mandatory and load-bearing** — ISO date, rewritten on every status change. It is the
+only record of how long a ticket has been sitting, and the SessionStart hook reads it to flag tickets
+past their age SLA (WORKFLOW §13). A row whose status moves without its date moving is a silent
+stall. **`Owner` may not stay `—` on a non-terminal row:** an unowned follow-up never moves.
+
+| Ticket | Title | Owner | Gates | Status | Updated |
+| ------ | ----- | ----- | ----- | ------ | ------- |
+| —      | —     | —     | —     | —      | —       |
 
 ---
 

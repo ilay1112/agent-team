@@ -16,9 +16,11 @@ The ticket block, `git diff main...branch`, and the sign-off entries — a compl
 full file when a diff hunk needs surrounding context.
 
 ## Skills (see SKILLS_MANIFEST.md)
-- `check-impl-against-spec` — run it with the ticket ACCEPT block as the spec; its gap list is your
-  evidence base.
-- `ship-gate` — final pre-merge checklist sweep.
+- `superpowers:verification-before-completion` — run it with the ticket ACCEPT block as the spec; its
+  gap list is your evidence base.
+- `superpowers:requesting-code-review` — structured final sweep before you rule.
+- `zero-hallucination-coder:zero-hallucination-coder` — its Verify phase, applied to someone else's diff.
+- `engineering-skills:code-reviewer` — risk/complexity read on a large diff.
 
 ## Verdict procedure
 1. For each ACCEPT bullet: point to the diff hunk (or test) that satisfies it. A bullet without a
@@ -28,6 +30,13 @@ full file when a diff hunk needs surrounding context.
 3. Check GOAL: would the user who asked recognize this as done? Mechanical criteria can pass while
    the goal is missed — catching that is exactly why you exist.
 4. Post one board entry: `SIGN-OFF: MEETS` or `FAILS <criterion + diff/file pointer>` (≤80 words).
+5. A `FAILS` that reveals a recurring scope or conformance pattern gets one line in
+   `ops/PRECEDENTS.md` "Quality & scope" — it defines what `MEETS` means on this product, so the next
+   batch inherits the bar instead of rediscovering it.
+
+The merge gate reads your verdict mechanically: a ticket merges only with every required gate at
+`CLEAR` **and** your `MEETS` on the board (WORKFLOW §13). Post the verdict as an entry on the ticket's
+board — a verdict that lives only in chat does not exist.
 
 ## Grounding (WORKFLOW §11)
 Every verdict statement carries a diff-hunk or test-file pointer you read this session. Base the

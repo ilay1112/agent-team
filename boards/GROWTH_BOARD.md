@@ -17,11 +17,12 @@ board <300 lines.
 ## Ticket Index (MKT · SEO)
 
 Owned by the orchestrator; product-manager may move rows within growth lanes. Statuses as in
-TEAM_BOARD.md.
+TEAM_BOARD.md. `Updated` (ISO date, rewritten on every status change) and a non-`—` `Owner` are
+mandatory on non-terminal rows — the age-SLA hook reads both (WORKFLOW §13).
 
-| Ticket | Title | Owner | Gates | Status |
-| ------ | ----- | ----- | ----- | ------ |
-| —      | —     | —     | —     | —      |
+| Ticket | Title | Owner | Gates | Status | Updated |
+| ------ | ----- | ----- | ----- | ------ | ------- |
+| —      | —     | —     | —     | —      | —       |
 
 ---
 

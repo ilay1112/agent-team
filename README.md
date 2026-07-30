@@ -14,8 +14,8 @@ pushed to a git repo (e.g. `<you>/agent-team`), any machine running Claude Code 
 /plugin install agent-team@agent-team-marketplace
 ```
 
-The plugin ships all 19 agents (`agents/`) and the `/start` skill (`skills/start/`). Then, in any
-project:
+The plugin ships all 19 agents (`agents/`), three commands (`/start`, `/ticket`, `/standup`), and the
+enforcement hooks (`hooks/`). Then, in any project:
 
 ```
 /start
@@ -28,6 +28,43 @@ success metrics, validation status, distribution channel, and how involved you w
 the skill packs your first batch needs (then asks you to **close and reopen Claude Code** so they
 load), and proposes the first ticket batch. Precise answers up front = fewer guesses and fewer
 tokens later.
+
+## Day-to-day: three commands
+
+| Command | Use |
+| ------- | --- |
+| `/start` | Once per product — intake interrogation, writes `ops/PRODUCT.md` + caps + roadmap, proposes the first batch. |
+| `/ticket <one line>` | Any time you notice work. One sentence in; the orchestrator resolves `WHERE` pointers by searching the repo, drafts the full `REQUEST_FORMAT` ticket, assigns owner + gates, and shows it for a single yes/no. |
+| `/standup` | What's stuck, across **every** deployment — non-terminal tickets with age, unowned follow-ups, stale handoffs, boards over budget, gates awaiting a verdict. |
+
+`/ticket` exists because filing, not building, is where work dies: across four live deployments every
+stalled item stalled *before a ticket existed*. `/standup` exists because a ticket in a repo nobody
+opens is invisible — it turns the team into something that reports to you instead of an inbox you have
+to remember to open. Wire it into a daily routine with
+`node scripts/standup.js --out ~/.claude/agent-team/standup.md`.
+
+## Enforcement (why the rules hold this time)
+
+The gate chain — validators with real BLOCK authority plus a supervisor goal-conformance gate — is the
+part that consistently works: it catches allowlist bypasses, tenant-isolation gaps, fake rewards,
+a11y regressions and untyped timeouts, in-batch, with a delta re-verify. It is untouched.
+
+Everything that depended on *sustained discipline* decayed instead: entry length, the fixed entry
+block, the weekly archive sweep, handoff freshness, chasing aged tickets. All of those are
+deterministically checkable, so `hooks/hooks.json` now checks them (WORKFLOW §13):
+
+- **`SessionStart`** — runs re-anchor steps 1-2 for free (branch, HEAD, tree state, handoff,
+  health-check command) and warns on tickets past their age SLA, unowned rows, stale handoffs and
+  oversized boards.
+- **board writes** — entry format, `**Status:**` on-enum, ≤80-word body, board size budget.
+- **`git merge` / `gh pr merge`** — every required gate `CLEAR` and supervisor `MEETS` for the
+  branch's ticket, read off the board.
+- **`Stop`** — working tree clean, handoff overwritten, no placeholders left behind.
+
+Hooks **fail open**: they exit 0 always and stay entirely silent in any repo without
+`ops/PRODUCT.md`, so the plugin is inert in unrelated sessions. They ship in `warn` mode; promote a
+check to `block` per-repo in `.claude/agent-team.json` once its noise is tuned. Verify the layer
+yourself with `node hooks/test/run-tests.js` (70 assertions; requires Node 18+).
 
 ## Manual deploy (alternative)
 
@@ -67,7 +104,10 @@ holds the cross-platform design system, UX specs, and the blocking UI gate.
 - `LIFECYCLE.md` — idea→profit stages (Validate→Build→Launch→Monetize→Grow), stage gates, and the
   recurring owner-sync pulse that keeps you and the team aligned.
 - `INTAKE.md` — the /start interrogation: question bank mapped to PRODUCT.md/COSTS.md fields.
-- `skills/start/` — the /start skill; `.claude-plugin/` — plugin + marketplace manifests.
+- `skills/start/`, `skills/ticket/`, `skills/standup/` — the three commands.
+- `hooks/` — enforcement layer (`hooks.json` + Node scripts + `test/run-tests.js`).
+- `scripts/standup.js` — cross-repo status collector (deterministic; `--json`, `--out`).
+- `.claude-plugin/` — plugin + marketplace manifests.
 - `TEAM_BOARD.md` — delivery board: engineering ticket index + threaded entries + decisions log.
 - `boards/GROWTH_BOARD.md` — growth board: MKT/SEO tickets + experiment log.
 - `boards/OPS_BOARD.md` — ops board: BIZ/HR tickets (finance, vendors, workforce).
@@ -77,6 +117,7 @@ holds the cross-platform design system, UX specs, and the blocking UI gate.
   (orchestrator installs per batch; installs require closing and reopening Claude Code).
 - `ops/PRODUCT.md` — product context (the one mutable per-product doc).
 - `ops/PROGRESS.md` — live handoff + session log: the bridge every fresh context window re-anchors on.
+- `ops/PRECEDENTS.md` — case law: gate rulings that bind future tickets, so no product re-learns them.
 - `ops/COSTS.md` — CFO ledger: every recurring cost, caps, kill switches.
 - `ops/ROADMAP.md` — PM priorities.
 - `agents/*.md` — 19 subagent definitions.
@@ -112,3 +153,12 @@ appear exactly twice (orchestrator, supervisor). Full rules: `TOKEN_POLICY.md`.
 Every claim ships with its evidence (`path:line` read, command run, source cited); unverified
 statements are labeled and converted to questions; work maps to ACCEPT bullets and owners re-anchor
 on the ticket GOAL before every handoff. Full protocol: `WORKFLOW.md` §11.
+
+## Learning (why a lesson is learned once)
+
+A gate verdict that establishes a binding rule goes in `ops/PRECEDENTS.md` — one line, written with
+the sign-off. Gates read their section before ruling, so settled cases stop being re-argued; `hr`
+promotes any precedent that holds across two products upstream into these process docs at a cache
+epoch. Without that ladder each product pays full price to re-learn the same design case law, which is
+exactly what happened before this file existed. Handoffs get overwritten and board threads get
+archived; precedents outlive both by design.

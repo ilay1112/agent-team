@@ -17,10 +17,12 @@ Archive: COO's weekly sweep moves Done threads to `boards/OPS_BOARD_ARCHIVE.md`;
 ## Ticket Index (BIZ · HR)
 
 Owned by the orchestrator; coo may move rows within ops lanes. Statuses as in TEAM_BOARD.md.
+`Updated` (ISO date, rewritten on every status change) and a non-`—` `Owner` are mandatory on
+non-terminal rows — the age-SLA hook reads both (WORKFLOW §13).
 
-| Ticket | Title | Owner | Gates | Status |
-| ------ | ----- | ----- | ----- | ------ |
-| —      | —     | —     | —     | —      |
+| Ticket | Title | Owner | Gates | Status | Updated |
+| ------ | ----- | ----- | ----- | ------ | ------- |
+| —      | —     | —     | —     | —      | —       |
 
 ---
 

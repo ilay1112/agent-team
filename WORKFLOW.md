@@ -3,8 +3,11 @@
 Single source of process truth. Every agent follows it on every change. Read with `TEAM_BOARD.md`
 (how agents talk), `REQUEST_FORMAT.md` (how work is specified), `TOKEN_POLICY.md` (how we stay cheap),
 `HARNESS.md` (session lifecycle — how work survives context windows), `SKILLS_MANIFEST.md`
-(capability packs + installation protocol), `LIFECYCLE.md` (idea→profit stages and owner sync), and
-`ops/PRODUCT.md` (what we're building).
+(capability packs + installation protocol), `LIFECYCLE.md` (idea→profit stages and owner sync),
+`ops/PRECEDENTS.md` (case law from past verdicts), and `ops/PRODUCT.md` (what we're building).
+
+**§13 is not documentation.** The checks it describes run as hooks — board format, merge gates,
+clean-state and ticket-age SLAs are verified mechanically, not on trust.
 
 We are a **company running a live product**: triage → design → branch → implement → review →
 validate → supervisor gate → merge → deploy → verify → close. Keep `main` green, ship small
@@ -128,15 +131,17 @@ infra run finish before acting on it (state locks stay consistent).
   escalate immediately.
 - **Per batch (orchestrator):** skill-provisioning check — batch owners' + gates' packs installed
   per SKILLS_MANIFEST before dispatch; installs trigger the close-and-reopen-Claude step.
-- **Weekly (COO):** ops review — ticket-age SLAs, blocked items, archive sweep across all three
-  boards (TOKEN_POLICY §3).
+- **Weekly (COO):** ops review — start from `/standup` (cross-repo facts, computed), then chase
+  ticket-age SLAs (§13) and blocked items, and run the archive sweep across all three boards
+  (TOKEN_POLICY §3). The sweep is the cadence item most often skipped and the most expensive to skip.
 - **Monthly (CFO):** cost review of `ops/COSTS.md` vs caps — downgrade/kill decisions ticketized as `BIZ`.
 - **Per release (marketing):** changelog → announcement/ASO updates, ticketized as `MKT`.
 - **Monthly (seo-specialist):** organic health review — GSC metrics, AI-citation tracking, ranking
   movements → findings ticketized as `SEO`.
 - **Continuous (PM):** feedback + metrics → ROADMAP re-rank by revenue impact → new tickets.
-- **Monthly (hr):** capability + performance review — new models/skills/tools scouted, agent
-  performance read from board history → upgrade proposals as `HR` tickets, shipped at cache epochs.
+- **Monthly (hr):** capability + performance review — new models/skills/tools scouted (verified to
+  resolve, not just named), agent performance read from board history, and **precedent promotion**
+  across deployments (§12) → upgrade proposals as `HR` tickets, shipped at cache epochs.
 
 ## 10. Golden rules (apply everywhere)
 
@@ -167,7 +172,53 @@ Applies to every agent, in every message:
 5. **Separate observation from inference** in every entry: "tests pass (ran `pnpm test`)" versus
    "likely caused by X (inferred)".
 
-## 12. Session harness (context lifecycle — full protocol in HARNESS.md)
+## 12. Precedents (case law — `ops/PRECEDENTS.md`)
+
+A gate verdict that establishes a rule binding future tickets gets one line in `ops/PRECEDENTS.md`,
+written in the same edit as the `SIGN-OFF`. Gates read their section before ruling; ticket owners read
+their area's section at DoR. Reversals strike the old line and add the new one.
+
+This is separate from the board and from `ops/PROGRESS.md` on purpose: board threads get archived,
+handoffs get overwritten, and precedents must outlive both. `hr` promotes any precedent holding across
+two or more products upstream into these process docs at a cache epoch (§10) — the extraction ladder,
+applied to lessons instead of code.
+
+## 13. Enforcement (hooks — what the process checks rather than trusts)
+
+Every rule above used to be enforced by an agent choosing to obey it. The rules needing sustained
+discipline — board format, entry length, the archive sweep, handoff freshness, ticket-age chasing —
+decayed in every deployment audited, while the gate chain itself held. So the deterministic half is
+now mechanical. The plugin ships `hooks/hooks.json`; Claude Code loads it automatically.
+
+| Hook | Checks | Replaces |
+|------|--------|----------|
+| `SessionStart` | runs re-anchor steps 1-2, injects repo state + handoff + health command; warns on non-terminal tickets past SLA, unowned rows, stale handoff, boards over budget | HARNESS §2 as prose |
+| `PostToolUse` (board writes) | entry block format, `**Status:**` present and on-enum, ≤80-word body, board size | the ≤80-word rule and the fixed block |
+| `SubagentStop` | lints what a worker appended; notices code written with no board entry | the per-batch HANDOFF rule |
+| `PreToolUse` (`git merge`, `gh pr merge`) | every required gate `CLEAR` + supervisor `MEETS` for the branch's ticket | §5-6 as prose |
+| `Stop` | working tree clean, handoff overwritten, no template placeholders left | §14.2 clean-state contract |
+
+**Ticket-age SLAs** (config `.claude/agent-team.json`, defaults): `Backlog` 30d · `Ready` 7d ·
+`In Progress` 3d · `In Review` 2d · `In Validation` 2d · `Supervisor Gate` 1d · `Blocked` 3d. Ages
+come from the Ticket Index `Updated` column, which is why that column is mandatory.
+
+Every hook **fails open**: it exits 0 always, and stays completely silent in any repo without
+`ops/PRODUCT.md`. Enforcement ships in `warn` mode; promote a check to `block` once its noise is
+tuned:
+
+```json
+{
+  "enforce": { "mergeGate": "block", "boardLint": "warn", "sessionEnd": "warn" },
+  "boardMaxLines": 300,
+  "entryMaxWords": 80,
+  "ticketAgeDays": { "In Review": 2, "Blocked": 3 }
+}
+```
+
+A hook finding is a fact about the repo, not an opinion — fix the underlying state rather than tuning
+the threshold, unless the threshold is genuinely wrong for this product.
+
+## 14. Session harness (context lifecycle — full protocol in HARNESS.md)
 
 Every working session is disposable; state lives in files. Non-negotiables, all agents:
 

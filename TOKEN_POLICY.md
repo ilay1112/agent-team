@@ -14,9 +14,10 @@ context is assembled **static → volatile, in this fixed order**:
 1. Agent definition (static — identical across products)
 2. WORKFLOW.md + REQUEST_FORMAT.md + this file (near-static)
 3. ops/PRODUCT.md (slow-changing product context)
-4. Area doc(s) for the agent's domain (slow-changing)
-5. Ticket block(s) (volatile)
-6. Board excerpt — the relevant thread(s) (volatile)
+4. ops/PRECEDENTS.md — your section only (slow-changing, append-only)
+5. Area doc(s) for the agent's domain (slow-changing)
+6. Ticket block(s) (volatile)
+7. Board excerpt — the relevant thread(s) (volatile)
 ```
 
 - **Cache epochs:** hold every shared-doc edit (layers 1–4) until the sprint boundary, batch them
@@ -47,7 +48,10 @@ context is assembled **static → volatile, in this fixed order**:
   body.
 - **Weekly archive sweep (COO):** Done threads move to each board's `_ARCHIVE.md`; each Ticket Index
   keeps active rows + last 10 Done. Keep every hot board under ~300 lines — this directly cuts every
-  agent's read cost.
+  agent's read cost. **This is the cheapest rule in the file and the one that decays first:** the sweep
+  ran in no deployment audited, no `_ARCHIVE.md` was ever created, and one board reached 4,937 lines /
+  648 KB that every session then grepped. The hooks warn at the write that crosses the budget and again
+  at session start (WORKFLOW §13); treat the warning as the ticket.
 - Outputs go to **files**: reports, specs, and metrics land in the repo; the board entry carries the
   pointer.
 
@@ -62,15 +66,25 @@ context is assembled **static → volatile, in this fixed order**:
 
 ## 5. Model tiers
 
-| Tier   | Agents                                                                  | Rationale |
-|--------|-------------------------------------------------------------------------|-----------|
-| opus   | orchestrator, supervisor                                                | Routing and goal-conformance errors are the most expensive mistakes |
-| sonnet | all developers, design-expert, security-validator, product-manager, seo-specialist, hr | Building and high-stakes review (indexing mistakes take months to recover; a prompt edit shapes an agent for a sprint) |
-| haiku  | qa-validator, performance-validator, cost-validator, coo, cfo, marketing| Structured, rubric-driven work |
+Agent definitions carry the **family alias** (`opus` / `sonnet` / `haiku`), never a pinned model ID.
+The alias resolves to the current member of that family, so the workforce inherits each new
+generation without 19 file edits — and, because the definition text is unchanged, without invalidating
+a single cached prefix. Pinning IDs would cost a cache epoch per model release and buy nothing.
 
-**Escalation ladder:** a haiku validator below confidence posts `SIGN-OFF: ESCALATE <reason>`; the
-orchestrator re-runs that single check on sonnet. Reserve opus for dispatch and the supervisor gate —
-routine work lives on haiku/sonnet.
+| Tier | Agents | Rationale |
+|------|--------|-----------|
+| `opus` | orchestrator, supervisor | Routing and goal-conformance errors are the most expensive mistakes a run can make |
+| `sonnet` | all developers, design-expert, security-validator, product-manager, seo-specialist, hr | Building and high-stakes review (an indexing mistake takes months to recover; a prompt edit shapes an agent for a whole sprint) |
+| `haiku` | qa-validator, performance-validator, cost-validator, coo, cfo, marketing | Structured, rubric-driven work against a fixed checklist |
+
+**Escalation ladder:** a `haiku` validator below confidence posts `SIGN-OFF: ESCALATE <reason>`; the
+orchestrator re-runs **that single check** on `sonnet` — one check, not the batch. Reserve `opus` for
+dispatch and the supervisor gate. The ladder is a confidence mechanism, not a retry: a validator that
+escalates routinely has a definition gap, which is `hr`'s signal (WORKFLOW §9).
+
+**Changing a tier is an `HR` ticket** (WORKFLOW §10) with a cost note — it changes the run's payroll.
+Verify any frontmatter key before adding it — Claude Code ignores unrecognized agent-definition
+fields at load time, so a speculative key looks like a capability while doing nothing at all.
 
 ## 6. Reply contracts
 

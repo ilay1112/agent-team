@@ -26,6 +26,14 @@ sessions are its heartbeats.
 4. Run the health check (PRODUCT.md "Health check / init commands") **before new work** — a broken
    baseline gets fixed ahead of any feature; inheriting breakage silently is how projects rot.
 
+**Steps 1-2 arrive for free.** The `SessionStart` hook (WORKFLOW §13) runs them and injects branch,
+HEAD, tree state, recent commits, the handoff block, and the health-check command into the session's
+opening context — plus warnings for tickets past SLA, unowned rows, stale handoffs, and oversized
+boards. Read that block and continue at step 3; re-run the git commands only to verify something it
+reported. When the hook flags the handoff as behind HEAD, **git is the authority and the handoff is a
+claim** — a stale handoff describing finished work as in-flight is exactly how a reporting loop ends
+up nagging about work that already shipped.
+
 ## 3. Session end — clean-state contract (every session)
 
 - Nothing half-implemented reaches `main`: finish the ticket or park it on its branch with a
@@ -35,6 +43,10 @@ sessions are its heartbeats.
 - End **deliberately at a boundary** (batch done, blocker hit, recycle trigger) — never run until
   the window dies mid-edit. A clean stop costs one block; a dirty one costs the next session an
   archaeology dig.
+
+The `Stop` hook checks this contract (WORKFLOW §13): uncommitted paths, an untouched handoff, template
+placeholders left in the block. Deliberately parked work passes — say so in the handoff, which is the
+whole point of writing one.
 
 ## 4. Context recycling
 
@@ -82,7 +94,14 @@ decision, never by drifting.
 | this ticket | branch + board thread | while owned |
 | this session | `ops/PROGRESS.md` Current handoff | at re-anchor |
 | the product | `ops/PRODUCT.md` + ROADMAP + COSTS | per Read-first |
+| **every future ticket** | **`ops/PRECEDENTS.md`** — rulings that bind (WORKFLOW §12) | **gates before ruling; owners at DoR** |
 | the process | WORKFLOW / TOKEN_POLICY / LIFECYCLE / this file | static, cached prefix |
 
 Rule of thumb: the window holds what is being worked on **now**; everything else is a pointer
 fetched just-in-time. When in doubt, write it down and let it go.
+
+**Pick the right horizon, or the lesson dies.** The handoff is overwritten every session and board
+threads get archived — so a durable rule written into either is a rule with an expiry date. The
+flagship build's hardest-won design precedents went into a `PROGRESS.md` paragraph, and every sibling
+product re-learned them from scratch. Session state → handoff. Rules that bind later work →
+`ops/PRECEDENTS.md`.
