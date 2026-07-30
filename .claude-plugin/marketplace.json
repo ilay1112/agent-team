@@ -1,5 +1,6 @@
 {
   "name": "agent-team-marketplace",
+  "description": "A product-agnostic AI dev company for Claude Code: 19 agents across engineering, design, growth, validation and the exec suite, running a gated ticket workflow from idea to profit.",
   "owner": {
     "name": "ilay",
     "email": "ilay1112@gmail.com"
